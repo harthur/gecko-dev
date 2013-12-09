@@ -12,6 +12,7 @@ DIRS += [
     'framework',
     'inspector',
     'layoutview',
+    'magnifier',
     'markupview',
     'netmonitor',
     'profiler',
@@ -23,7 +24,7 @@ DIRS += [
     'styleeditor',
     'styleinspector',
     'tilt',
-    'webconsole',
+    'webconsole'
 ]
 
 EXTRA_COMPONENTS += [
