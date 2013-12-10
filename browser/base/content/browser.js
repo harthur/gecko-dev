@@ -6976,15 +6976,6 @@ Object.defineProperty(this, "HUDService", {
   enumerable: true
 });
 
-Object.defineProperty(this, "MagnifierManager", {
-  get: function() {
-    let devtools = Cu.import("resource://gre/modules/devtools/Loader.jsm", {}).devtools;
-    return devtools.require("devtools/magnifier/magnifier").MagnifierManager;
-  },
-  configurable: true,
-  enumerable: true
-});
-
 // Prompt user to restart the browser in safe mode
 function safeModeRestart()
 {
@@ -7059,14 +7050,24 @@ var ResponsiveUI = {
   }
 };
 
-function toggleMagnifier() {
-  this.MagnifierManager.toggle(this);
-}
-
 XPCOMUtils.defineLazyGetter(ResponsiveUI, "ResponsiveUIManager", function() {
   let tmp = {};
   Cu.import("resource:///modules/devtools/responsivedesign.jsm", tmp);
   return tmp.ResponsiveUIManager;
+});
+
+function openMagnifier() {
+  var magnifier = new this.Magnifier(this);
+  magnifier.open();
+}
+
+Object.defineProperty(this, "Magnifier", {
+  get: function() {
+    let devtools = Cu.import("resource://gre/modules/devtools/Loader.jsm", {}).devtools;
+    return devtools.require("devtools/magnifier/magnifier").Magnifier;
+  },
+  configurable: true,
+  enumerable: true
 });
 
 XPCOMUtils.defineLazyGetter(window, "gShowPageResizers", function () {

@@ -14,6 +14,7 @@
 #canvas-container {
 	display: block;
 	position: relative;
+	transform-origin: 50% 50%;
 }
 
 #color-preview {
@@ -32,8 +33,4 @@
 #color-value-list > .menulist-label-box > .menulist-label {
 	text-align: start;
 	-moz-padding-start: 1em;
-}
-
-#canvas-container {
-	transform-origin: 50% 50%;
 }

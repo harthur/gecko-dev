@@ -55,8 +55,6 @@ let MagnifierManager = {
   }
 }
 
-exports.MagnifierManager = MagnifierManager;
-
 /**
  * let dropper = new EyeDropper(window);
  * dropper.open({x, y});
@@ -65,16 +63,14 @@ exports.MagnifierManager = MagnifierManager;
  * dropper.on("select", (x, y, color) => {})
  */
 
-function Magnifier(chromeWindow) {
+function Magnifier(chromeWindow, opts = { copyOnSelect: true }) {
+  const { copyOnSelect } = opts;
   this.onMouseMove = this.onMouseMove.bind(this);
   this.onMouseDown = this.onMouseDown.bind(this);
   this.onKeyDown = this.onKeyDown.bind(this);
 
   this.chromeWindow = chromeWindow;
   this.chromeDocument = chromeWindow.document;
-
-  this.contentWindow = chromeWindow.gBrowser.selectedTab.linkedBrowser.contentWindow;
-  this.contentDocument = this.contentWindow.document;
 
   this.dragging = true;
   this.popupSet = this.chromeDocument.querySelector("#mainPopupSet");
@@ -89,9 +85,12 @@ function Magnifier(chromeWindow) {
   };
 
   this.format = "rgb"; //Services.prefs.getCharPref(FORMAT_PREF);
+  this.copyOnSelect = copyOnSelect;
 
   EventEmitter.decorate(this);
 }
+
+exports.Magnifier = Magnifier;
 
 Magnifier.prototype = {
   /**
@@ -140,13 +139,19 @@ Magnifier.prototype = {
     }
   },
 
-  open: function() {
+  open: function(options={}) {
+    let { screenX, screenY } = options;
+
     this._panel = this.buildPanel();
 
     this.addListeners();
     this.popupSet.appendChild(this._panel);
 
-    this._panel.openPopup();
+    let win = this.chromeWindow;
+    screenX = screenX || (win.screenX + win.outerWidth / 2);
+    screenY = screenY || (win.screenY + win.outerHeight / 2);
+
+    this._panel.openPopupAtScreen(screenX, screenY);
   },
 
   destroy: function() {
@@ -197,6 +202,7 @@ Magnifier.prototype = {
     this.colorPreview = this.iframeDocument.querySelector("#color-preview");
     this.colorValues = this.iframeDocument.querySelector("#color-value-list");
     this.canvasOverflow = this.iframeDocument.querySelector("#canvas-overflow");
+    this.copyButton = this.iframeDocument.querySelector("#copy-button");
     let computedOverflowStyle =  this.iframeDocument.defaultView.getComputedStyle(this.canvasOverflow);
 
     this.zoomWindow.width = parseInt(computedOverflowStyle.getPropertyValue("width"), 10);
@@ -267,23 +273,33 @@ Magnifier.prototype = {
     event.preventDefault();
     event.stopPropagation();
 
-    //this.copyColor(this.destroy.bind(this));
+    this.selectColor();
+  },
+
+  selectColor: function() {
+    this.emit("select", this.colorValues.value);
+
+    if (this.copyOnSelect) {
+      this.copyColor(this.destroy.bind(this));
+    }
+    else {
+      this.destroy();
+    }
   },
 
   copyColor: function(cb) {
     Services.appShell.hiddenDOMWindow.clearTimeout(this.copyTimeout);
     clipboardHelper.copyString(this.colorValues.value);
-    cb();
-    // this.copyButton.textContent = this.copyButton.getAttribute("data-copied");
-    // this.copyButton.classList.add("highlight");
-    // this.copyTimeout = Services.appShell.hiddenDOMWindow.setTimeout(() => {
-    //   this.copyButton.textContent = this.copyButton.getAttribute("data-copy");
-    //   this.copyButton.classList.remove("highlight");
+    this.copyButton.textContent = this.copyButton.getAttribute("data-copied");
+    this.copyButton.classList.add("highlight");
+    this.copyTimeout = Services.appShell.hiddenDOMWindow.setTimeout(() => {
+      this.copyButton.textContent = this.copyButton.getAttribute("data-copy");
+      this.copyButton.classList.remove("highlight");
 
-    //   if (cb && cb.apply) {
-    //     cb();
-    //   }
-    // }, 750);
+      if (cb && cb.apply) {
+        cb();
+      }
+    }, 750);
   },
 
   maybeCopy: function(event) {
