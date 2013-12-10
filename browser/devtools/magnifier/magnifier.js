@@ -14,12 +14,12 @@ loader.lazyGetter(this, "clipboardHelper", function() {
     getService(Ci.nsIClipboardHelper);
 });
 
-const PANEL_WIDTH = 100;
-
 const XULNS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const MAGNIFIER_URL = "chrome://browser/content/devtools/magnifier.xul";
 //const ZOOM_PREF    = "devtools.magnifier.zoom";
 //const FORMAT_PREF    = "devtools.magnifier.format";
+
+const CANVAS_WIDTH = 96;
 
 let MagnifierManager = {
   _instances: new WeakMap(),
@@ -79,7 +79,7 @@ function Magnifier(chromeWindow) {
   this.dragging = true;
   this.popupSet = this.chromeDocument.querySelector("#mainPopupSet");
 
-  let zoom = 7; //Services.prefs.getIntPref(ZOOM_PREF);
+  let zoom = 6; //Services.prefs.getIntPref(ZOOM_PREF);
   this.zoomWindow = {
     x: 0,          // the left coordinate of the center of the inspected region
     y: 0,          // the top coordinate of the center of the inspected region
@@ -180,6 +180,8 @@ Magnifier.prototype = {
     iframe.setAttribute("transparent", "true");
     iframe.setAttribute("class", "devtools-magnifier-iframe");
     iframe.setAttribute("src", MAGNIFIER_URL);
+    iframe.setAttribute("width", CANVAS_WIDTH);
+    iframe.setAttribute("height", CANVAS_WIDTH);
 
     panel.appendChild(iframe);
 
@@ -199,8 +201,6 @@ Magnifier.prototype = {
 
     this.zoomWindow.width = parseInt(computedOverflowStyle.getPropertyValue("width"), 10);
     this.zoomWindow.height = parseInt(computedOverflowStyle.getPropertyValue("height"), 10);
-
-    this.populateZoomLabel();
 
     this.addPanelListeners();
 
@@ -243,6 +243,8 @@ Magnifier.prototype = {
     if (!this.dragging || !this._panel) {
       return;
     }
+
+    let { width } = this.zoomWindow;
     let win = this.chromeWindow;
 
     let windowX = win.screenX + (win.outerWidth - win.innerWidth);
@@ -253,8 +255,8 @@ Magnifier.prototype = {
 
     this.moveRegion(x, y);
 
-    let panelX = event.screenX - PANEL_WIDTH / 2;
-    let panelY = event.screenY - PANEL_WIDTH / 2;
+    let panelX = event.screenX - width / 2;
+    let panelY = event.screenY - width / 2;
 
     this._panel.moveTo(panelX, panelY);
   },
@@ -325,21 +327,6 @@ Magnifier.prototype = {
     this.zoomWindow.y += offsetY;
 
     this.drawWindow();
-  },
-
-  onZoomChange: function(value) {
-    this.zoomWindow.zoom = value;
-
-    this.populateZoomLabel();
-
-    //Services.prefs.setIntPref(ZOOM_PREF, this.zoomWindow.zoom);
-
-    this.drawWindow();
-  },
-
-  populateZoomLabel: function() {
-    let label = this.iframeDocument.querySelector("#zoom-level-label");
-    label.value = this.zoomWindow.zoom + "x";
   },
 
   toggleDragging: function(mode) {
