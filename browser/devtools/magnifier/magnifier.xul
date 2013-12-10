@@ -61,22 +61,11 @@
 
     </toolbar>
       <hbox flex="1">
-        <vbox  flex="1">
-          <spacer flex="1" />
-          <box>
-            <hbox flex="1">
-              <spacer flex="1" />
-              <box id="canvas-overflow">
-              <box id="canvas-container">
-                <canvas id="canvas" xmlns="http://www.w3.org/1999/xhtml"></canvas>
-              </box>
-              </box>
-              <spacer flex="1" />
-            </hbox>
+        <box id="canvas-overflow">
+          <box id="canvas-container">
+            <canvas id="canvas" xmlns="http://www.w3.org/1999/xhtml"></canvas>
           </box>
-            <!-- -->
-          <spacer flex="1" />
-        </vbox>
+        </box>
       </hbox>
       <box align="center" hidden="true">
         <label for="zoom-level">Zoom:</label>

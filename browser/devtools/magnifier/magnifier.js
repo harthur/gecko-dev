@@ -16,9 +16,6 @@ loader.lazyGetter(this, "clipboardHelper", function() {
 
 const PANEL_WIDTH = 100;
 
-const PANEL_STYLE = "border-radius:50%; background-clip:padding-box;" +
-                    "background: rgba(0,100,150,0.1);height: 100px;width:100px";
-
 const XULNS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const MAGNIFIER_URL = "chrome://browser/content/devtools/magnifier.xul";
 //const ZOOM_PREF    = "devtools.magnifier.zoom";
@@ -82,7 +79,7 @@ function Magnifier(chromeWindow) {
   this.dragging = true;
   this.popupSet = this.chromeDocument.querySelector("#mainPopupSet");
 
-  let zoom = 6; //Services.prefs.getIntPref(ZOOM_PREF);
+  let zoom = 7; //Services.prefs.getIntPref(ZOOM_PREF);
   this.zoomWindow = {
     x: 0,          // the left coordinate of the center of the inspected region
     y: 0,          // the top coordinate of the center of the inspected region
@@ -170,7 +167,6 @@ Magnifier.prototype = {
     panel.setAttribute("backdrag", true);
     panel.setAttribute("level", "floating");
     panel.setAttribute("close", true);
-    panel.setAttribute("style", PANEL_STYLE);
 
     panel.addEventListener("popuphidden", (e) => {
       if (e.target === panel) {
@@ -181,6 +177,8 @@ Magnifier.prototype = {
     let iframe = this.iframe = this.chromeDocument.createElementNS(XULNS, "iframe");
     iframe.addEventListener("load", this.frameLoaded.bind(this), true);
     iframe.setAttribute("flex", "1");
+    iframe.setAttribute("transparent", "true");
+    iframe.setAttribute("class", "devtools-magnifier-iframe");
     iframe.setAttribute("src", MAGNIFIER_URL);
 
     panel.appendChild(iframe);
@@ -193,19 +191,15 @@ Magnifier.prototype = {
     this.canvas = this.iframeDocument.querySelector("#canvas");
     this.ctx = this.canvas.getContext("2d");
     this.canvasContainer = this.iframeDocument.querySelector("#canvas-container")
-    this.zoomLevel = this.iframeDocument.querySelector("#zoom-level");
     this.colorLabel = this.iframeDocument.querySelector("#color-text-preview");
     this.colorPreview = this.iframeDocument.querySelector("#color-preview");
     this.colorValues = this.iframeDocument.querySelector("#color-value-list");
-    this.toggleButton = this.iframeDocument.querySelector("#toggle-button");
     this.canvasOverflow = this.iframeDocument.querySelector("#canvas-overflow");
-    this.copyButton = this.iframeDocument.querySelector("#copy-button");
     let computedOverflowStyle =  this.iframeDocument.defaultView.getComputedStyle(this.canvasOverflow);
 
     this.zoomWindow.width = parseInt(computedOverflowStyle.getPropertyValue("width"), 10);
     this.zoomWindow.height = parseInt(computedOverflowStyle.getPropertyValue("height"), 10);
 
-    this.zoomLevel.value = this.zoomWindow.zoom;
     this.populateZoomLabel();
 
     this.addPanelListeners();
@@ -215,9 +209,6 @@ Magnifier.prototype = {
 
   addPanelListeners: function() {
     this.iframe.contentWindow.addEventListener("click", this.onMouseDown);
-
-    this.toggleButton.addEventListener("command",
-                           this.toggleDragging.bind(this), false);
 
     this.colorValues.addEventListener("command", () => {
       this.format = this.colorValues.selectedItem.getAttribute("format");
@@ -230,10 +221,6 @@ Magnifier.prototype = {
 
     this.iframeDocument.addEventListener("keydown", this.maybeCopy.bind(this));
     this.iframeDocument.addEventListener("keydown", this.onKeyDown);
-
-    this.zoomLevel.addEventListener("change", this.onZoomChange.bind(this));
-
-    this.copyButton.addEventListener("command", this.copyColor.bind(this));
 
     let closeCmd = this.iframeDocument.getElementById("magnifier-cmd-close");
     closeCmd.addEventListener("command", this.destroy.bind(this), true);
@@ -278,23 +265,23 @@ Magnifier.prototype = {
     event.preventDefault();
     event.stopPropagation();
 
-    this.copyColor(this.destroy.bind(this));
+    //this.copyColor(this.destroy.bind(this));
   },
 
   copyColor: function(cb) {
     Services.appShell.hiddenDOMWindow.clearTimeout(this.copyTimeout);
     clipboardHelper.copyString(this.colorValues.value);
+    cb();
+    // this.copyButton.textContent = this.copyButton.getAttribute("data-copied");
+    // this.copyButton.classList.add("highlight");
+    // this.copyTimeout = Services.appShell.hiddenDOMWindow.setTimeout(() => {
+    //   this.copyButton.textContent = this.copyButton.getAttribute("data-copy");
+    //   this.copyButton.classList.remove("highlight");
 
-    this.copyButton.textContent = this.copyButton.getAttribute("data-copied");
-    this.copyButton.classList.add("highlight");
-    this.copyTimeout = Services.appShell.hiddenDOMWindow.setTimeout(() => {
-      this.copyButton.textContent = this.copyButton.getAttribute("data-copy");
-      this.copyButton.classList.remove("highlight");
-
-      if (cb && cb.apply) {
-        cb();
-      }
-    }, 750);
+    //   if (cb && cb.apply) {
+    //     cb();
+    //   }
+    // }, 750);
   },
 
   maybeCopy: function(event) {
@@ -340,8 +327,8 @@ Magnifier.prototype = {
     this.drawWindow();
   },
 
-  onZoomChange: function() {
-    this.zoomWindow.zoom = this.zoomLevel.value;
+  onZoomChange: function(value) {
+    this.zoomWindow.zoom = value;
 
     this.populateZoomLabel();
 
@@ -365,8 +352,6 @@ Magnifier.prototype = {
     else {
       this.dragging = !this.dragging;
     }
-
-    this.toggleButton.checked = this.dragging;
   },
 
   moveRegion: function(x, y) {
