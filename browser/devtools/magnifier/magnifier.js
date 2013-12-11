@@ -21,40 +21,6 @@ const MAGNIFIER_URL = "chrome://browser/content/devtools/magnifier.xul";
 
 const CANVAS_WIDTH = 96;
 
-let MagnifierManager = {
-  _instances: new WeakMap(),
-
-  toggle: function(chromeWindow) {
-    let magnifier = this.getInstance(chromeWindow);
-    if (magnifier) {
-      magnifier.destroy();
-    }
-    else {
-      magnifier = this.createInstance(chromeWindow);
-      magnifier.open();
-    }
-  },
-
-  getInstance: function(chromeWindow) {
-    return this._instances.get(chromeWindow);
-  },
-
-  createInstance: function(chromeWindow) {
-    let magnifier = new Magnifier(chromeWindow);
-    this._instances.set(chromeWindow, magnifier);
-
-    magnifier.on("destroy", () => {
-      this.deleteInstance(chromeWindow);
-    });
-
-    return magnifier;
-  },
-
-  deleteInstance: function(chromeWindow) {
-    this._instances.delete(chromeWindow);
-  }
-}
-
 /**
  * let dropper = new EyeDropper(window);
  * dropper.open({x, y});

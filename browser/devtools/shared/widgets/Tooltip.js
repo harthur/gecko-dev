@@ -12,6 +12,8 @@ const {Spectrum} = require("devtools/shared/widgets/Spectrum");
 const EventEmitter = require("devtools/shared/event-emitter");
 const {colorUtils} = require("devtools/css-color");
 const Heritage = require("sdk/core/heritage");
+const {Magnifier} = require("devtools/magnifier/magnifier");
+
 
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
@@ -175,6 +177,12 @@ function Tooltip(doc, options) {
       this["_onPopup" + event], false);
   }
 
+  this.panel.addEventListener("popuphiding", (event) => {
+    if (this.preventHiding) {
+      event.preventDefault();
+    }
+  });
+
   // Listen to keypress events to close the tooltip if configured to do so
   let win = this.doc.querySelector("window");
   this._onKeyPress = event => {
@@ -215,6 +223,10 @@ Tooltip.prototype = {
     y = this.defaultOffsetY) {
     this.panel.hidden = false;
     this.panel.openPopup(anchor, position, x, y);
+  },
+
+  set consumeOutsideClick(val) {
+    this.panel.setAttribute("consumeoutsideclicks", val);
   },
 
   /**
@@ -555,7 +567,7 @@ Tooltip.prototype = {
     let iframe = this.doc.createElementNS(XHTML_NS, "iframe");
     iframe.setAttribute("transparent", true);
     iframe.setAttribute("width", "210");
-    iframe.setAttribute("height", "195");
+    iframe.setAttribute("height", "220");
     iframe.setAttribute("flex", "1");
     iframe.setAttribute("class", "devtools-tooltip-iframe");
 
@@ -738,6 +750,7 @@ function SwatchColorPickerTooltip(doc) {
   // resolves to the spectrum instance
   this.spectrum = this.tooltip.setColorPickerContent([0, 0, 0, 1]);
   this._onSpectrumColorChange = this._onSpectrumColorChange.bind(this);
+  this._openEyeDropper = this._openEyeDropper.bind(this);
 }
 
 module.exports.SwatchColorPickerTooltip = SwatchColorPickerTooltip;
@@ -761,14 +774,45 @@ SwatchColorPickerTooltip.prototype = Heritage.extend(SwatchBasedEditorTooltip.pr
         spectrum.updateUI();
       });
     }
+
+    let tooltipDoc = this.tooltip.content.contentDocument;
+    let eyeButton = tooltipDoc.querySelector("#eyedropper-button");
+    eyeButton.addEventListener("click", this._openEyeDropper);
   },
 
   _onSpectrumColorChange: function(event, rgba, cssColor) {
+    this._selectColor(cssColor);
+  },
+
+  _selectColor: function(color) {
     if (this.activeSwatch) {
-      this.activeSwatch.style.backgroundColor = cssColor;
-      this.activeSwatch.nextSibling.textContent = cssColor;
-      this.preview(cssColor);
+      this.activeSwatch.style.backgroundColor = color;
+      this.activeSwatch.nextSibling.textContent = color;
+      this.preview(color);
     }
+  },
+
+  _openEyeDropper: function() {
+    // we want the click to be handled by the eyedropper, not the tooltip
+    this.tooltip.consumeOutsideClick = false;
+    this.tooltip.preventHiding = true;
+
+    let chromeWindow = this.tooltip.doc.defaultView.top;
+    let dropper = new Magnifier(chromeWindow, { copyOnSelect: false });
+
+    dropper.once("select", (event, color) => {
+      this._selectColor(color);
+
+      this.spectrum.then((spectrum) => {
+        spectrum.rgb = this._colorToRgba(color);
+        spectrum.updateUI();
+      });
+
+      this.tooltip.consumeOutsideClick = true;
+      this.tooltip.preventHiding = false;
+    });
+
+    dropper.open();
   },
 
   _colorToRgba: function(color) {
