@@ -19,6 +19,7 @@ const MAGNIFIER_URL = "chrome://browser/content/devtools/magnifier.xul";
 //const ZOOM_PREF    = "devtools.magnifier.zoom";
 //const FORMAT_PREF    = "devtools.magnifier.format";
 
+const PANEL_STYLE = "border:1px solid #333;width:96px;height:120px";
 const CANVAS_WIDTH = 96;
 
 /**
@@ -138,6 +139,7 @@ Magnifier.prototype = {
     panel.setAttribute("backdrag", true);
     panel.setAttribute("level", "floating");
     panel.setAttribute("close", true);
+    panel.setAttribute("style", PANEL_STYLE);
 
     panel.addEventListener("popuphidden", (e) => {
       if (e.target === panel) {
@@ -164,11 +166,9 @@ Magnifier.prototype = {
     this.canvas = this.iframeDocument.querySelector("#canvas");
     this.ctx = this.canvas.getContext("2d");
     this.canvasContainer = this.iframeDocument.querySelector("#canvas-container")
-    this.colorLabel = this.iframeDocument.querySelector("#color-text-preview");
     this.colorPreview = this.iframeDocument.querySelector("#color-preview");
-    this.colorValues = this.iframeDocument.querySelector("#color-value-list");
+    this.colorValue = this.iframeDocument.querySelector("#color-value");
     this.canvasOverflow = this.iframeDocument.querySelector("#canvas-overflow");
-    this.copyButton = this.iframeDocument.querySelector("#copy-button");
     let computedOverflowStyle =  this.iframeDocument.defaultView.getComputedStyle(this.canvasOverflow);
 
     this.zoomWindow.width = parseInt(computedOverflowStyle.getPropertyValue("width"), 10);
@@ -256,11 +256,9 @@ Magnifier.prototype = {
   copyColor: function(cb) {
     Services.appShell.hiddenDOMWindow.clearTimeout(this.copyTimeout);
     clipboardHelper.copyString(this.colorValues.value);
-    this.copyButton.textContent = this.copyButton.getAttribute("data-copied");
-    this.copyButton.classList.add("highlight");
+//    this.copyButton.classList.add("highlight");\
     this.copyTimeout = Services.appShell.hiddenDOMWindow.setTimeout(() => {
-      this.copyButton.textContent = this.copyButton.getAttribute("data-copy");
-      this.copyButton.classList.remove("highlight");
+//      this.copyButton.classList.remove("highlight");
 
       if (cb && cb.apply) {
         cb();

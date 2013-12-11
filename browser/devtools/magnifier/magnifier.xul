@@ -38,39 +38,20 @@
   </keyset>
 
   <vbox id="magnifier-container" flex="1">
+    <hbox flex="1">
+      <box id="canvas-overflow">
+        <box id="canvas-container">
+          <canvas id="canvas" xmlns="http://www.w3.org/1999/xhtml"></canvas>
+        </box>
+      </box>
+    </hbox>
     <toolbar id="magnifier-toolbar"
              class="devtools-toolbar"
-             flex="1"
-             hidden="true">
+             flex="1">
       <box id="color-preview">
       </box>
-      <menulist class="devtools-menulist devtools-monospace"
-                id="color-value-list"  sizetopopup="pref">
-        <menupopup>
-          <menuitem id="rgb-value" format="rgb"></menuitem>
-          <menuitem id="hsl-value" format="hsl"></menuitem>
-          <menuitem id="hex-value" format="hex"></menuitem>
-        </menupopup>
-      </menulist>
-      <toolbarbutton id="copy-button" class="devtools-toolbarbutton"
-                     data-copied="Copied" data-copy="Copy">
-        Copy
-      </toolbarbutton>
-      <toolbarbutton id="toggle-button" class="devtools-toolbarbutton"
-                     type="checkbox" checked="true"/>
-
+      <label id="color-value">
+      </label>
     </toolbar>
-      <hbox flex="1">
-        <box id="canvas-overflow">
-          <box id="canvas-container">
-            <canvas id="canvas" xmlns="http://www.w3.org/1999/xhtml"></canvas>
-          </box>
-        </box>
-      </hbox>
-      <box align="center" hidden="true">
-        <label for="zoom-level">Zoom:</label>
-        <scale id="zoom-level" min="2" max="20" increment="2" flex="1"/>
-        <label id="zoom-level-label"/>
-      </box>
   </vbox>
 </window>
