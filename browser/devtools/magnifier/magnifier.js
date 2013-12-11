@@ -198,7 +198,7 @@ Magnifier.prototype = {
     closeCmd.addEventListener("command", this.destroy.bind(this), true);
 
     let copyCmd = this.iframeDocument.getElementById("magnifier-cmd-copy");
-    copyCmd.addEventListener("command", this.copyColor.bind(this), true);
+    copyCmd.addEventListener("command", this.selectColor.bind(this), true);
   },
 
   addListeners: function() {

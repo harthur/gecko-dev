@@ -807,10 +807,12 @@ SwatchColorPickerTooltip.prototype = Heritage.extend(SwatchBasedEditorTooltip.pr
         spectrum.rgb = this._colorToRgba(color);
         spectrum.updateUI();
       });
+    });
 
+    dropper.once("destroy", () => {
       this.tooltip.consumeOutsideClick = true;
       this.tooltip.preventHiding = false;
-    });
+    })
 
     dropper.open();
   },
