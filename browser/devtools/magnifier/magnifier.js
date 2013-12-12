@@ -19,8 +19,9 @@ const MAGNIFIER_URL = "chrome://browser/content/devtools/magnifier.xul";
 //const ZOOM_PREF    = "devtools.magnifier.zoom";
 //const FORMAT_PREF    = "devtools.magnifier.format";
 
-const PANEL_STYLE = "border:1px solid #333;width:96px;height:120px";
+const PANEL_STYLE = "border:1px solid #333;width:96px;height:114px";
 const CANVAS_WIDTH = 96;
+const CLOSE_DELAY = 750;
 
 /**
  * let dropper = new EyeDropper(window);
@@ -51,7 +52,7 @@ function Magnifier(chromeWindow, opts = { copyOnSelect: true }) {
     zoom: zoom     // zoom level - integer, minimum is 2
   };
 
-  this.format = "rgb"; //Services.prefs.getCharPref(FORMAT_PREF);
+  this.format = "hex"; //Services.prefs.getCharPref(FORMAT_PREF);
   this.copyOnSelect = copyOnSelect;
 
   EventEmitter.decorate(this);
@@ -182,13 +183,6 @@ Magnifier.prototype = {
   addPanelListeners: function() {
     this.iframe.contentWindow.addEventListener("click", this.onMouseDown);
 
-    this.colorValues.addEventListener("command", () => {
-      this.format = this.colorValues.selectedItem.getAttribute("format");
-      //Services.prefs.setCharPref(FORMAT_PREF, this.format);
-
-      this.populateColorValues();
-    }, false);
-
     this.canvas.addEventListener("click", this.onMouseDown);
 
     this.iframeDocument.addEventListener("keydown", this.maybeCopy.bind(this));
@@ -243,7 +237,7 @@ Magnifier.prototype = {
   },
 
   selectColor: function() {
-    this.emit("select", this.colorValues.value);
+    this.emit("select", this.colorValue.value);
 
     if (this.copyOnSelect) {
       this.copyColor(this.destroy.bind(this));
@@ -253,17 +247,17 @@ Magnifier.prototype = {
     }
   },
 
-  copyColor: function(cb) {
+  copyColor: function(callback) {
     Services.appShell.hiddenDOMWindow.clearTimeout(this.copyTimeout);
-    clipboardHelper.copyString(this.colorValues.value);
-//    this.copyButton.classList.add("highlight");\
-    this.copyTimeout = Services.appShell.hiddenDOMWindow.setTimeout(() => {
-//      this.copyButton.classList.remove("highlight");
+    clipboardHelper.copyString(this.colorValue.value);
+    this.colorValue.classList.add("highlight");
 
-      if (cb && cb.apply) {
-        cb();
+    this.copyTimeout = Services.appShell.hiddenDOMWindow.setTimeout(() => {
+      this.colorValue.classList.remove("highlight");
+      if (callback) {
+        callback();
       }
-    }, 750);
+    }, CLOSE_DELAY);
   },
 
   maybeCopy: function(event) {
@@ -402,11 +396,11 @@ Magnifier.prototype = {
   populateColorValues: function() {
     let color = this.centerColor;
 
-    for (let format of ["rgb", "hsl", "hex"]) {
-      let item = this.iframeDocument.getElementById(format + "-value");
-      item.value = item.label = color[format];
-    }
+    // for (let format of ["rgb", "hsl", "hex"]) {
+    //   let item = this.iframeDocument.getElementById(format + "-value");
+    //   item.value = item.label = color[format];
+    // }
 
-    this.colorValues.value = color[this.format];
+    this.colorValue.value = color[this.format];
   }
 }

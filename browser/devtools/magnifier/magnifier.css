@@ -21,16 +21,9 @@
 	height: 16px;
 	box-shadow: 0px 0px 0px black;
 	border: solid 1px #fff;
-	margin-left: 3px;
-	margin-right: 5px;
+	-moz-margin-start: 3px;
 }
 
-#color-value-list {
-	-moz-user-select:text;
-	min-width: 180px;
-}
-
-#color-value-list > .menulist-label-box > .menulist-label {
-	text-align: start;
-	-moz-padding-start: 1em;
+#color-value.highlight {
+	box-shadow: 0 0 1em limegreen;
 }

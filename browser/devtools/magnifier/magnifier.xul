@@ -45,13 +45,11 @@
         </box>
       </box>
     </hbox>
-    <toolbar id="magnifier-toolbar"
-             class="devtools-toolbar"
-             flex="1">
+    <hbox>
       <box id="color-preview">
       </box>
-      <label id="color-value">
+      <label id="color-value" class="devtools-monospace">
       </label>
-    </toolbar>
+    </hbox>
   </vbox>
 </window>
