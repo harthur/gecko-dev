@@ -7,5 +7,6 @@
 JS_MODULES_PATH = 'modules/devtools/magnifier'
 
 EXTRA_JS_MODULES += [
+    'commands.js',
     'magnifier.js'
 ]
