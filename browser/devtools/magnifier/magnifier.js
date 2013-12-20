@@ -16,7 +16,7 @@ loader.lazyGetter(this, "clipboardHelper", function() {
 
 const MAGNIFIER_URL = "chrome://browser/content/devtools/magnifier.xul";
 //const ZOOM_PREF    = "devtools.magnifier.zoom";
-//const FORMAT_PREF    = "devtools.magnifier.format";
+//const FORMAT_PREF    = "devtools.defaultColorUnit";
 
 const PANEL_STYLE = "border:1px solid #333;width:96px;height:114px;" +
                    "-moz-appearance:none;background-color:transparent";
@@ -24,11 +24,11 @@ const CANVAS_WIDTH = 96;
 const CLOSE_DELAY = 750;
 
 /**
- * let dropper = new EyeDropper(window);
- * dropper.open({x, y});
- * dropper.close();
- * dropper.on("move", (x, y, color) => {})
- * dropper.on("select", (x, y, color) => {})
+ * Magnifier widget. Once opened, shows zoomed area above current pixel and
+ * displays the color value of the center pixel.
+ *
+ * let magnifier = new Magnifier(window);
+ * maginifier.open();
  */
 
 function Magnifier(chromeWindow, opts = { copyOnSelect: true }) {
@@ -98,15 +98,12 @@ Magnifier.prototype = {
     return new CssColor("rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")");
   },
 
-  toggle: function() {
-    if (this._panel) {
-      this.destroy();
-    }
-    else {
-      this.open();
-    }
-  },
-
+  /**
+   * Show the magnifier.
+   * 
+   * @param {object} options
+   *        options including screenX, screenY
+   */
   open: function(options={}) {
     let { screenX, screenY } = options;
 
@@ -169,11 +166,9 @@ Magnifier.prototype = {
     this.canvasContainer = this.iframeDocument.querySelector("#canvas-container")
     this.colorPreview = this.iframeDocument.querySelector("#color-preview");
     this.colorValue = this.iframeDocument.querySelector("#color-value");
-    this.canvasOverflow = this.iframeDocument.querySelector("#canvas-overflow");
-    let computedOverflowStyle =  this.iframeDocument.defaultView.getComputedStyle(this.canvasOverflow);
 
-    this.zoomWindow.width = parseInt(computedOverflowStyle.getPropertyValue("width"), 10);
-    this.zoomWindow.height = parseInt(computedOverflowStyle.getPropertyValue("height"), 10);
+    this.zoomWindow.width = this.canvas.width;
+    this.zoomWindow.height = this.canvas.height;
 
     this.addPanelListeners();
 
@@ -181,11 +176,9 @@ Magnifier.prototype = {
   },
 
   addPanelListeners: function() {
+    this.canvas.addEventListener("click", this.onMouseDown);
     this.iframe.contentWindow.addEventListener("click", this.onMouseDown);
 
-    this.canvas.addEventListener("click", this.onMouseDown);
-
-    this.iframeDocument.addEventListener("keydown", this.maybeCopy.bind(this));
     this.iframeDocument.addEventListener("keydown", this.onKeyDown);
 
     let closeCmd = this.iframeDocument.getElementById("magnifier-cmd-close");
@@ -227,6 +220,13 @@ Magnifier.prototype = {
     this._panel.moveTo(panelX, panelY);
   },
 
+  moveRegion: function(x, y) {
+    this.zoomWindow.x = x;
+    this.zoomWindow.y = y;
+
+    this.drawWindow();
+  },
+
   onMouseDown: function(event) {
     this.toggleDragging(false);
 
@@ -250,6 +250,7 @@ Magnifier.prototype = {
   copyColor: function(callback) {
     Services.appShell.hiddenDOMWindow.clearTimeout(this.copyTimeout);
     clipboardHelper.copyString(this.colorValue.value);
+
     this.colorValue.classList.add("highlight");
 
     this.copyTimeout = Services.appShell.hiddenDOMWindow.setTimeout(() => {
@@ -260,13 +261,12 @@ Magnifier.prototype = {
     }, CLOSE_DELAY);
   },
 
-  maybeCopy: function(event) {
+  onKeyDown: function(event) {
     if (event.metaKey && event.keyCode === event.DOM_VK_C) {
       this.copyColor();
+      return;
     }
-  },
 
-  onKeyDown: function(event) {
     let offsetX = 0;
     let offsetY = 0;
     let modifier = 1;
@@ -313,13 +313,6 @@ Magnifier.prototype = {
     else {
       this.dragging = !this.dragging;
     }
-  },
-
-  moveRegion: function(x, y) {
-    this.zoomWindow.x = x;
-    this.zoomWindow.y = y;
-
-    this.drawWindow();
   },
 
   drawWindow: function() {
@@ -395,12 +388,6 @@ Magnifier.prototype = {
 
   populateColorValues: function() {
     let color = this.centerColor;
-
-    // for (let format of ["rgb", "hsl", "hex"]) {
-    //   let item = this.iframeDocument.getElementById(format + "-value");
-    //   item.value = item.label = color[format];
-    // }
-
     this.colorValue.value = color[this.format];
   }
 }
