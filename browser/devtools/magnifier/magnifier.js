@@ -14,12 +14,12 @@ loader.lazyGetter(this, "clipboardHelper", function() {
     getService(Ci.nsIClipboardHelper);
 });
 
-const XULNS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const MAGNIFIER_URL = "chrome://browser/content/devtools/magnifier.xul";
 //const ZOOM_PREF    = "devtools.magnifier.zoom";
 //const FORMAT_PREF    = "devtools.magnifier.format";
 
-const PANEL_STYLE = "border:1px solid #333;width:96px;height:114px";
+const PANEL_STYLE = "border:1px solid #333;width:96px;height:114px;" +
+                   "-moz-appearance:none;background-color:transparent";
 const CANVAS_WIDTH = 96;
 const CLOSE_DELAY = 750;
 
@@ -148,10 +148,10 @@ Magnifier.prototype = {
       }
     });
 
-    let iframe = this.iframe = this.chromeDocument.createElementNS(XULNS, "iframe");
+    let iframe = this.iframe = this.chromeDocument.createElement("iframe");
     iframe.addEventListener("load", this.frameLoaded.bind(this), true);
     iframe.setAttribute("flex", "1");
-    iframe.setAttribute("transparent", "true");
+    iframe.setAttribute("transparent", "transparent");
     iframe.setAttribute("class", "devtools-magnifier-iframe");
     iframe.setAttribute("src", MAGNIFIER_URL);
     iframe.setAttribute("width", CANVAS_WIDTH);

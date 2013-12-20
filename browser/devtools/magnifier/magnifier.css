@@ -1,7 +1,12 @@
+window {
+	background-color: transparent;
+}
+
 #canvas {
 	image-rendering: -moz-crisp-edges;
 	cursor: none;
-	background: transparent;
+	background-color: transparent;
+	border-radius: 50%;
 }
 
 #canvas-overflow {

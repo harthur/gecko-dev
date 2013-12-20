@@ -38,13 +38,12 @@
   </keyset>
 
   <vbox id="magnifier-container" flex="1">
-    <hbox flex="1">
-      <box id="canvas-overflow">
-        <box id="canvas-container">
-          <canvas id="canvas" xmlns="http://www.w3.org/1999/xhtml"></canvas>
-        </box>
+    <box id="canvas-overflow">
+      <box id="canvas-container">
+        <canvas id="canvas" xmlns="http://www.w3.org/1999/xhtml" width="96" height="96">
+        </canvas>
       </box>
-    </hbox>
+    </box>
     <hbox>
       <box id="color-preview">
       </box>
