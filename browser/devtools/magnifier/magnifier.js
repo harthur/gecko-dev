@@ -117,8 +117,6 @@ Magnifier.prototype = {
     screenY = screenY || (win.screenY + win.outerHeight / 2);
 
     this._panel.openPopupAtScreen(screenX, screenY);
-
-    this.onMouseMove({ screenX: screenX, screenY: screenY });
   },
 
   destroy: function() {

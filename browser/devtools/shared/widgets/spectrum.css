@@ -1,13 +1,15 @@
+
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #eyedropper-button {
-  background: url("chrome://browser/skin/devtools/command-magnifier.png");
-  width: 14px;
-  height: 14px;
-  background-color: #999;
-  border-radius: 3px;
+  background: url("chrome://browser/skin/devtools/magnifier-black.png");
+  width: 18px;
+  height: 18px;
+  padding: 1px;
+  border: 1px solid grey;
+  border-radius: 2px;
 }
 
 /* Mix-in classes */
