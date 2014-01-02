@@ -6,17 +6,14 @@ const {colorUtils} = require("devtools/css-color");
 const CssColor = colorUtils.CssColor;
 let EventEmitter = require("devtools/shared/event-emitter");
 
-loader.lazyGetter(this, "gDevTools",
-  () => Cu.import("resource:///modules/devtools/gDevTools.jsm", {}).gDevTools);
-
 loader.lazyGetter(this, "clipboardHelper", function() {
   return Cc["@mozilla.org/widget/clipboardhelper;1"].
     getService(Ci.nsIClipboardHelper);
 });
 
 const MAGNIFIER_URL = "chrome://browser/content/devtools/magnifier.xul";
-//const ZOOM_PREF    = "devtools.magnifier.zoom";
-//const FORMAT_PREF    = "devtools.defaultColorUnit";
+const ZOOM_PREF = "devtools.magnifier.zoom";
+const FORMAT_PREF = "devtools.defaultColorUnit";
 
 const PANEL_STYLE = "border:1px solid #333;width:96px;height:114px;" +
                    "-moz-appearance:none;background-color:transparent";
@@ -33,6 +30,7 @@ const CLOSE_DELAY = 750;
 
 function Magnifier(chromeWindow, opts = { copyOnSelect: true }) {
   const { copyOnSelect } = opts;
+  this.onFirstMouseMove = this.onFirstMouseMove.bind(this);
   this.onMouseMove = this.onMouseMove.bind(this);
   this.onMouseDown = this.onMouseDown.bind(this);
   this.onKeyDown = this.onKeyDown.bind(this);
@@ -52,7 +50,7 @@ function Magnifier(chromeWindow, opts = { copyOnSelect: true }) {
     zoom: zoom     // zoom level - integer, minimum is 2
   };
 
-  this.format = "hex"; //Services.prefs.getCharPref(FORMAT_PREF);
+  this.format = Services.prefs.getCharPref(FORMAT_PREF);
   this.copyOnSelect = copyOnSelect;
 
   EventEmitter.decorate(this);
@@ -100,23 +98,20 @@ Magnifier.prototype = {
 
   /**
    * Show the magnifier.
-   * 
-   * @param {object} options
-   *        options including screenX, screenY
    */
-  open: function(options={}) {
-    let { screenX, screenY } = options;
-
-    this._panel = this.buildPanel();
+  open: function() {
+    this.chromeDocument.addEventListener("mousemove", this.onFirstMouseMove);
 
     this.addListeners();
+  },
+
+  onFirstMouseMove: function(event) {
+    this.chromeDocument.removeEventListener("mousemove", this.onFirstMouseMove);
+
+    this._panel = this.buildPanel();
     this.popupSet.appendChild(this._panel);
 
-    let win = this.chromeWindow;
-    screenX = screenX || (win.screenX + win.outerWidth / 2);
-    screenY = screenY || (win.screenY + win.outerHeight / 2);
-
-    this._panel.openPopupAtScreen(screenX, screenY);
+    this._panel.openPopupAtScreen(event.screenX, event.screenY);
   },
 
   destroy: function() {
@@ -160,7 +155,7 @@ Magnifier.prototype = {
   },
 
   frameLoaded: function() {
-    this.iframeDocument =  this.iframe.contentDocument;
+    this.iframeDocument = this.iframe.contentDocument;
     this.canvas = this.iframeDocument.querySelector("#canvas");
     this.ctx = this.canvas.getContext("2d");
     this.canvasContainer = this.iframeDocument.querySelector("#canvas-container")
