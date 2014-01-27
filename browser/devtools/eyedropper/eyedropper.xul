@@ -5,8 +5,8 @@
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 
 <!DOCTYPE window [
-<!ENTITY % magnifierDTD SYSTEM "chrome://browser/locale/devtools/magnifier.dtd" >
- %magnifierDTD;
+<!ENTITY % eyedropperDTD SYSTEM "chrome://browser/locale/devtools/eyedropper.dtd" >
+ %eyedropperDTD;
 ]>
 
 <?xml-stylesheet href="chrome://global/skin/global.css"?>
@@ -14,30 +14,30 @@
 <?xml-stylesheet href="chrome://browser/skin/devtools/widgets.css"?>
 <?xml-stylesheet href="chrome://browser/skin/devtools/profiler.css"?>
 <?xml-stylesheet href="chrome://browser/content/devtools/widgets.css"?>
-<?xml-stylesheet href="chrome://browser/content/devtools/magnifier.css" type="text/css"?>
+<?xml-stylesheet href="chrome://browser/content/devtools/eyedropper.css" type="text/css"?>
 
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <commandset id="magnifier-commandset">
-    <command id="magnifier-cmd-close"
+  <commandset id="eyedropper-commandset">
+    <command id="eyedropper-cmd-close"
              oncommand="void(0);"/>
-    <command id="magnifier-cmd-copy"
+    <command id="eyedropper-cmd-copy"
              oncommand="void(0);"/>
   </commandset>
 
-  <keyset id="magnifier-keyset">
-    <key id="magnifier-key-close"
+  <keyset id="eyedropper-keyset">
+    <key id="eyedropper-key-close"
          key="&closeCmd.key;"
-         command="magnifier-cmd-close"
+         command="eyedropper-cmd-close"
          modifiers="accel"/>
-    <key id="magnifier-key-escape"
+    <key id="eyedropper-key-escape"
          keycode="VK_ESCAPE"
-         command="magnifier-cmd-close"/>
-    <key id="magnifier-key-enter"
+         command="eyedropper-cmd-close"/>
+    <key id="eyedropper-key-enter"
          keycode="VK_RETURN"
-         command="magnifier-cmd-copy"/>
+         command="eyedropper-cmd-copy"/>
   </keyset>
 
-  <vbox id="magnifier-container" flex="1">
+  <vbox id="eyedropper-container" flex="1">
     <box id="canvas-overflow">
       <box id="canvas-container">
         <canvas id="canvas" xmlns="http://www.w3.org/1999/xhtml" width="96" height="96">

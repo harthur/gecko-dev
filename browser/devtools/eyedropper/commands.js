@@ -12,25 +12,25 @@ Cu.import("resource://gre/modules/devtools/gcli.jsm");
 // We can clean this up once the command line is loadered.
 Object.defineProperty(this, "Eyedropper", {
   get: function() {
-    return require("devtools/magnifier/magnifier").Eyedropper;
+    return require("devtools/eyedropper/eyedropper").Eyedropper;
   },
   enumerable: true
 });
 
 /**
-* 'magnifier' command
+* 'eyedropper' command
 */
 gcli.addCommand({
-  name: "magnifier",
+  name: "eyedropper",
   description: "Magnify areas of page to inspect pixels and colors",
-  buttonId: "command-button-magnifier",
+  buttonId: "command-button-eyedropper",
   buttonClass: "command-button",
   tooltipText: "Pixel Inspector",
 
   exec: function(args, context) {
     let chromeWindow = context.environment.chromeWindow;
 
-    let magnifier = new Eyedropper(chromeWindow);
-    magnifier.open();
+    let eyedropper = new Eyedropper(chromeWindow);
+    eyedropper.open();
   }
 });

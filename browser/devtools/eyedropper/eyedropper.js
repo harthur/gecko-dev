@@ -11,8 +11,8 @@ loader.lazyGetter(this, "clipboardHelper", function() {
     getService(Ci.nsIClipboardHelper);
 });
 
-const MAGNIFIER_URL = "chrome://browser/content/devtools/magnifier.xul";
-const ZOOM_PREF = "devtools.magnifier.zoom";
+const MAGNIFIER_URL = "chrome://browser/content/devtools/eyedropper.xul";
+const ZOOM_PREF = "devtools.eyedropper.zoom";
 const FORMAT_PREF = "devtools.defaultColorUnit";
 
 const PANEL_STYLE = "border:1px solid #333;width:96px;height:114px;" +
@@ -24,7 +24,7 @@ const CLOSE_DELAY = 750;
  * Eyedropper widget. Once opened, shows zoomed area above current pixel and
  * displays the color value of the center pixel.
  *
- * let magnifier = new Eyedropper(window);
+ * let eyedropper = new Eyedropper(window);
  * maginifier.open();
  */
 
@@ -97,7 +97,7 @@ Eyedropper.prototype = {
   },
 
   /**
-   * Show the magnifier.
+   * Show the eyedropper.
    */
   open: function() {
     this.chromeDocument.addEventListener("mousemove", this.onFirstMouseMove);
@@ -126,7 +126,7 @@ Eyedropper.prototype = {
 
   buildPanel: function() {
     let panel = this.chromeDocument.createElement("panel");
-    panel.id = "devtools-magnifier-indication-panel";
+    panel.id = "devtools-eyedropper-indication-panel";
     panel.setAttribute("noautofocus", true);
     panel.setAttribute("noautohide", true);
     panel.setAttribute("backdrag", true);
@@ -145,7 +145,7 @@ Eyedropper.prototype = {
     iframe.setAttribute("flex", "1");
     iframe.setAttribute("transparent", "transparent");
     iframe.setAttribute("allowTransparency", true);
-    iframe.setAttribute("class", "devtools-magnifier-iframe");
+    iframe.setAttribute("class", "devtools-eyedropper-iframe");
     iframe.setAttribute("src", MAGNIFIER_URL);
     iframe.setAttribute("width", CANVAS_WIDTH);
     iframe.setAttribute("height", CANVAS_WIDTH);
@@ -177,10 +177,10 @@ Eyedropper.prototype = {
 
     this.iframeDocument.addEventListener("keydown", this.onKeyDown);
 
-    let closeCmd = this.iframeDocument.getElementById("magnifier-cmd-close");
+    let closeCmd = this.iframeDocument.getElementById("eyedropper-cmd-close");
     closeCmd.addEventListener("command", this.destroy.bind(this), true);
 
-    let copyCmd = this.iframeDocument.getElementById("magnifier-cmd-copy");
+    let copyCmd = this.iframeDocument.getElementById("eyedropper-cmd-copy");
     copyCmd.addEventListener("command", this.selectColor.bind(this), true);
   },
 

@@ -12,7 +12,7 @@ const {Spectrum} = require("devtools/shared/widgets/Spectrum");
 const EventEmitter = require("devtools/shared/event-emitter");
 const {colorUtils} = require("devtools/css-color");
 const Heritage = require("sdk/core/heritage");
-const {Eyedropper} = require("devtools/magnifier/magnifier");
+const {Eyedropper} = require("devtools/eyedropper/eyedropper");
 
 
 Cu.import("resource://gre/modules/Services.jsm");

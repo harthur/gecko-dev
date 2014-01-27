@@ -7057,14 +7057,14 @@ XPCOMUtils.defineLazyGetter(ResponsiveUI, "ResponsiveUIManager", function() {
 });
 
 function openEyedropper() {
-  var magnifier = new this.Eyedropper(this);
-  magnifier.open();
+  var eyedropper = new this.Eyedropper(this);
+  eyedropper.open();
 }
 
 Object.defineProperty(this, "Eyedropper", {
   get: function() {
     let devtools = Cu.import("resource://gre/modules/devtools/Loader.jsm", {}).devtools;
-    return devtools.require("devtools/magnifier/magnifier").Eyedropper;
+    return devtools.require("devtools/eyedropper/eyedropper").Eyedropper;
   },
   configurable: true,
   enumerable: true

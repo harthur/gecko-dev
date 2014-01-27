@@ -12,7 +12,7 @@ DIRS += [
     'framework',
     'inspector',
     'layoutview',
-    'magnifier',
+    'eyedropper',
     'markupview',
     'netmonitor',
     'profiler',

@@ -203,10 +203,10 @@
                  command="Tools:ResponsiveUI"
                  key="key_responsiveUI"/>
     <broadcaster id="devtoolsMenuBroadcaster_Eyedropper"
-                 label="&magnifier.label;"
+                 label="&eyedropper.label;"
                  type="checkbox" autocheck="false"
                  command="Tools:Eyedropper"
-                 key="key_magnifier"/>
+                 key="key_eyedropper"/>
     <broadcaster id="devtoolsMenuBroadcaster_PageSource"
                  label="&pageSourceCmd.label;"
                  key="key_viewSource"
@@ -282,7 +282,7 @@
 #endif
     />
 
-    <key id="key_magnifier" key="&magnifier.commandkey;" command="Tools:Eyedropper"
+    <key id="key_eyedropper" key="&eyedropper.commandkey;" command="Tools:Eyedropper"
 #ifdef XP_MACOSX
         modifiers="accel,alt"
 #else

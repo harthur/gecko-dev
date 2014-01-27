@@ -458,8 +458,8 @@
   -moz-image-region: rect(0px, 64px, 16px, 48px);
 }
 
-#command-button-magnifier {
-  list-style-image: url("chrome://browser/skin/devtools/command-magnifier.png");
+#command-button-eyedropper {
+  list-style-image: url("chrome://browser/skin/devtools/command-eyedropper.png");
 }
 
 /* Tabs */
