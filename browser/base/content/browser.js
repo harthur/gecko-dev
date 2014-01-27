@@ -7056,15 +7056,15 @@ XPCOMUtils.defineLazyGetter(ResponsiveUI, "ResponsiveUIManager", function() {
   return tmp.ResponsiveUIManager;
 });
 
-function openMagnifier() {
-  var magnifier = new this.Magnifier(this);
+function openEyedropper() {
+  var magnifier = new this.Eyedropper(this);
   magnifier.open();
 }
 
-Object.defineProperty(this, "Magnifier", {
+Object.defineProperty(this, "Eyedropper", {
   get: function() {
     let devtools = Cu.import("resource://gre/modules/devtools/Loader.jsm", {}).devtools;
-    return devtools.require("devtools/magnifier/magnifier").Magnifier;
+    return devtools.require("devtools/magnifier/magnifier").Eyedropper;
   },
   configurable: true,
   enumerable: true

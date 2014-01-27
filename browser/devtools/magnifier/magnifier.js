@@ -21,14 +21,14 @@ const CANVAS_WIDTH = 96;
 const CLOSE_DELAY = 750;
 
 /**
- * Magnifier widget. Once opened, shows zoomed area above current pixel and
+ * Eyedropper widget. Once opened, shows zoomed area above current pixel and
  * displays the color value of the center pixel.
  *
- * let magnifier = new Magnifier(window);
+ * let magnifier = new Eyedropper(window);
  * maginifier.open();
  */
 
-function Magnifier(chromeWindow, opts = { copyOnSelect: true }) {
+function Eyedropper(chromeWindow, opts = { copyOnSelect: true }) {
   const { copyOnSelect } = opts;
   this.onFirstMouseMove = this.onFirstMouseMove.bind(this);
   this.onMouseMove = this.onMouseMove.bind(this);
@@ -56,9 +56,9 @@ function Magnifier(chromeWindow, opts = { copyOnSelect: true }) {
   EventEmitter.decorate(this);
 }
 
-exports.Magnifier = Magnifier;
+exports.Eyedropper = Eyedropper;
 
-Magnifier.prototype = {
+Eyedropper.prototype = {
   /**
    * The number of cells (blown-up pixels) per direction in the grid.
    */
@@ -144,6 +144,7 @@ Magnifier.prototype = {
     iframe.addEventListener("load", this.frameLoaded.bind(this), true);
     iframe.setAttribute("flex", "1");
     iframe.setAttribute("transparent", "transparent");
+    iframe.setAttribute("allowTransparency", true);
     iframe.setAttribute("class", "devtools-magnifier-iframe");
     iframe.setAttribute("src", MAGNIFIER_URL);
     iframe.setAttribute("width", CANVAS_WIDTH);

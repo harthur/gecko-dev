@@ -528,7 +528,7 @@
                             observes="devtoolsMenuBroadcaster_ResponsiveUI"
                             accesskey="&responsiveDesignTool.accesskey;"/>
                   <menuitem id="menu_magnifier"
-                            observes="devtoolsMenuBroadcaster_Magnifier"
+                            observes="devtoolsMenuBroadcaster_Eyedropper"
                             accesskey="&magnifier.accesskey;"/>
                   <menuitem id="menu_scratchpad"
                             observes="devtoolsMenuBroadcaster_Scratchpad"

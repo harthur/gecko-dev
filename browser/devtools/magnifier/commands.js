@@ -7,12 +7,12 @@ module.exports = [];
 
 Cu.import("resource://gre/modules/devtools/gcli.jsm");
 
-// Fetch MagnifierManager using the current loader, but don't save a
+// Fetch EyedropperManager using the current loader, but don't save a
 // reference to it, because it might change with a tool reload.
 // We can clean this up once the command line is loadered.
-Object.defineProperty(this, "Magnifier", {
+Object.defineProperty(this, "Eyedropper", {
   get: function() {
-    return require("devtools/magnifier/magnifier").Magnifier;
+    return require("devtools/magnifier/magnifier").Eyedropper;
   },
   enumerable: true
 });
@@ -30,7 +30,7 @@ gcli.addCommand({
   exec: function(args, context) {
     let chromeWindow = context.environment.chromeWindow;
 
-    let magnifier = new Magnifier(chromeWindow);
+    let magnifier = new Eyedropper(chromeWindow);
     magnifier.open();
   }
 });

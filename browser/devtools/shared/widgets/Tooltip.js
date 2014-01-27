@@ -12,7 +12,7 @@ const {Spectrum} = require("devtools/shared/widgets/Spectrum");
 const EventEmitter = require("devtools/shared/event-emitter");
 const {colorUtils} = require("devtools/css-color");
 const Heritage = require("sdk/core/heritage");
-const {Magnifier} = require("devtools/magnifier/magnifier");
+const {Eyedropper} = require("devtools/magnifier/magnifier");
 
 
 Cu.import("resource://gre/modules/Services.jsm");
@@ -798,7 +798,7 @@ SwatchColorPickerTooltip.prototype = Heritage.extend(SwatchBasedEditorTooltip.pr
     this.tooltip.preventHiding = true;
 
     let chromeWindow = this.tooltip.doc.defaultView.top;
-    let dropper = new Magnifier(chromeWindow, { copyOnSelect: false });
+    let dropper = new Eyedropper(chromeWindow, { copyOnSelect: false });
 
     dropper.once("select", (event, color) => {
       this._selectColor(color);
