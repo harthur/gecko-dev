@@ -229,7 +229,7 @@ These should match what Safari and other Apple applications use on OS X Lion. --
 <!ENTITY responsiveDesignTool.accesskey "R">
 <!ENTITY responsiveDesignTool.commandkey "M">
 
-<!ENTITY eyedropper.label   "Pixel Inspector">
+<!ENTITY eyedropper.label   "Eyedropper">
 <!ENTITY eyedropper.accesskey "P">
 <!ENTITY eyedropper.commandkey "X">
 

@@ -25,7 +25,7 @@ gcli.addCommand({
   description: "Magnify areas of page to inspect pixels and colors",
   buttonId: "command-button-eyedropper",
   buttonClass: "command-button",
-  tooltipText: "Pixel Inspector",
+  tooltipText: "Eyedropper",
 
   exec: function(args, context) {
     let chromeWindow = context.environment.chromeWindow;
