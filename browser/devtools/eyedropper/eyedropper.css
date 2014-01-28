@@ -32,6 +32,7 @@ window {
 
 #color-value-box {
   background-color: #CCC;
+  border-radius: 1px;
 }
 
 #color-value {
