@@ -7,21 +7,50 @@ const TESTCASE_URI = TEST_BASE + "color-block.html";
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
+const DIV_COLOR = "#00F";
+
 function test()
 {
   waitForExplicitFinish();
 
-  gBrowser.selectedTab = gBrowser.addTab();
-  gBrowser.selectedBrowser.addEventListener("load", function onLoad() {
-    gBrowser.selectedBrowser.removeEventListener("load", onLoad, true);
-    runTests();
-  }, true);
-
-  content.location = TESTCASE_URI;
+  addTab(TESTCASE_URI, runTests);
 }
 
 function runTests() {
   ok(true, "yay pass");
 
-  finish();
+  let dropper = new Eyedropper(window);
+
+  dropper.once("select", (event, color) => {
+    is(color, DIV_COLOR, "correct color selected");
+  });
+
+  waitForClipboard(DIV_COLOR, () => {
+    inspectPage(dropper);
+  }, finish, finish);
+}
+
+function inspectPage(dropper) {
+  dropper.open();
+
+  let target = content.document.getElementById("test");
+  let win = content.window;
+
+  EventUtils.synthesizeMouse(target, 20, 20, { type: "mousemove" }, win);
+
+  dropperLoaded(dropper).then(() => {
+    EventUtils.synthesizeMouse(target, 30, 30, { type: "mousemove" }, win);
+    EventUtils.synthesizeMouse(target, 30, 30, {}, win);
+  });
+}
+
+function dropperLoaded(dropper) {
+  if (dropper.loaded) {
+    return promise.resolve();
+  }
+
+  let deferred = promise.defer();
+  dropper.once("load", deferred.resolve);
+
+  return deferred.promise;
 }

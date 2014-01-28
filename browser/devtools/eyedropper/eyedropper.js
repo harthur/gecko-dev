@@ -39,6 +39,7 @@ function Eyedropper(chromeWindow, opts = { copyOnSelect: true }) {
   this.chromeDocument = chromeWindow.document;
 
   this.dragging = true;
+  this.loaded = false;
   this.popupSet = this.chromeDocument.querySelector("#mainPopupSet");
 
   let zoom = 6; //Services.prefs.getIntPref(ZOOM_PREF);
@@ -169,6 +170,9 @@ Eyedropper.prototype = {
     this.addPanelListeners();
 
     this.drawWindow();
+
+    this.loaded = true;
+    this.emit("load");
   },
 
   addPanelListeners: function() {
