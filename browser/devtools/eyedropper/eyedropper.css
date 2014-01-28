@@ -6,6 +6,7 @@ window {
 	image-rendering: -moz-crisp-edges;
 	cursor: none;
 	background-color: transparent;
+  border: 3px solid #CCC;
 	border-radius: 50%;
 }
 
@@ -26,9 +27,18 @@ window {
 	height: 16px;
 	box-shadow: 0px 0px 0px black;
 	border: solid 1px #fff;
-	-moz-margin-start: 3px;
+	margin: 3px;
+}
+
+#color-value-box {
+  background-color: #CCC;
+}
+
+#color-value {
+  padding: 0.5em;
+  text-shadow: 1px 1px 1px #fff;
 }
 
 #color-value.highlight {
-	box-shadow: 0 0 1em limegreen;
+  box-shadow: 0 0 1em limegreen;
 }

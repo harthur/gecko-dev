@@ -15,7 +15,7 @@ const MAGNIFIER_URL = "chrome://browser/content/devtools/eyedropper.xul";
 const ZOOM_PREF = "devtools.eyedropper.zoom";
 const FORMAT_PREF = "devtools.defaultColorUnit";
 
-const PANEL_STYLE = "width:96px;height:114px;" +
+const PANEL_STYLE = "width:140px;height:120px;" +
                    "-moz-appearance:none;background-color:transparent";
 const CANVAS_WIDTH = 96;
 const CLOSE_DELAY = 750;

@@ -40,7 +40,7 @@
         </canvas>
       </box>
     </box>
-    <hbox>
+    <hbox id="color-value-box">
       <box id="color-preview">
       </box>
       <label id="color-value" class="devtools-monospace">
