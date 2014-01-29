@@ -169,9 +169,6 @@ Eyedropper.prototype = {
   },
 
   addPanelListeners: function() {
-    this.canvas.addEventListener("click", this.onMouseDown);
-    this.iframe.contentWindow.addEventListener("click", this.onMouseDown);
-
     this.iframeDocument.addEventListener("keydown", this.onKeyDown);
 
     let closeCmd = this.iframeDocument.getElementById("eyedropper-cmd-close");
