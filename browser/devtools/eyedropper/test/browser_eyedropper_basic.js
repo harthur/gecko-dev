@@ -17,8 +17,6 @@ function test()
 }
 
 function runTests() {
-  ok(true, "yay pass");
-
   let dropper = new Eyedropper(window);
 
   dropper.once("select", (event, color) => {

@@ -6,7 +6,7 @@ window {
 	image-rendering: -moz-crisp-edges;
 	cursor: none;
 	background-color: transparent;
-  border: 3px solid #CCC;
+  border: 3px solid #E0E0E0;
 	border-radius: 50%;
 }
 
@@ -31,15 +31,16 @@ window {
 }
 
 #color-value-box {
-  background-color: #CCC;
+  background-color: #E0E0E0;
   border-radius: 1px;
 }
 
 #color-value {
-  padding: 0.5em;
+  padding: 0.3em;
   text-shadow: 1px 1px 1px #fff;
 }
 
 #color-value.highlight {
-  box-shadow: 0 0 1em limegreen;
+  box-shadow: inset 0 0 1em white;
+  font-family: inherit;
 }

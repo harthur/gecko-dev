@@ -11,6 +11,9 @@ loader.lazyGetter(this, "clipboardHelper", function() {
     getService(Ci.nsIClipboardHelper);
 });
 
+loader.lazyGetter(this, "l10n", () => Services.strings
+  .createBundle("chrome://browser/locale/devtools/eyedropper.properties"));
+
 const MAGNIFIER_URL = "chrome://browser/content/devtools/eyedropper.xul";
 const ZOOM_PREF = "devtools.eyedropper.zoom";
 const FORMAT_PREF = "devtools.defaultColorUnit";
@@ -102,8 +105,6 @@ Eyedropper.prototype = {
    */
   open: function() {
     this.chromeDocument.addEventListener("mousemove", this.onFirstMouseMove);
-
-    this.addListeners();
   },
 
   onFirstMouseMove: function(event) {
@@ -113,16 +114,8 @@ Eyedropper.prototype = {
     this.popupSet.appendChild(this._panel);
 
     this._panel.openPopupAtScreen(event.screenX, event.screenY);
-  },
 
-  destroy: function() {
-    if (this._panel) {
-      this.popupSet.removeChild(this._panel);
-      this._panel = null;
-    }
-    this.removeListeners();
-
-    this.emit("destroy");
+    this.addListeners();
   },
 
   buildPanel: function() {
@@ -249,12 +242,17 @@ Eyedropper.prototype = {
 
   copyColor: function(callback) {
     Services.appShell.hiddenDOMWindow.clearTimeout(this.copyTimeout);
-    clipboardHelper.copyString(this.colorValue.value);
+
+    let color = this.colorValue.value;
+    clipboardHelper.copyString(color);
 
     this.colorValue.classList.add("highlight");
+    this.colorValue.value = "✓ " + l10n.GetStringFromName("colorValue.copied");
 
     this.copyTimeout = Services.appShell.hiddenDOMWindow.setTimeout(() => {
       this.colorValue.classList.remove("highlight");
+      this.colorValue.value = color;
+
       if (callback) {
         callback();
       }
@@ -389,5 +387,15 @@ Eyedropper.prototype = {
   populateColorValues: function() {
     let color = this.centerColor;
     this.colorValue.value = color[this.format];
+  },
+
+  destroy: function() {
+    if (this._panel) {
+      this.popupSet.removeChild(this._panel);
+      this._panel = null;
+    }
+    this.removeListeners();
+
+    this.emit("destroy");
   }
 }
